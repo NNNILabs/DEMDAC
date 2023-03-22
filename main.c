@@ -16,7 +16,6 @@ void main()
     uint sm = pio_claim_unused_sm(pio, true);
     uint offset = pio_add_program(pio, &output_program);
     output_program_init(pio, sm, offset, startPin, pioDivider);
-    pio_sm_set_enabled(pio, sm, true);
 
     while (1) 
     {
