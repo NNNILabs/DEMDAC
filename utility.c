@@ -1,8 +1,8 @@
-#include "pico/stdlib.h"
-#include "hardware/pio.h"
-
 #include "utility.h"
 #include "output.pio.h"
+
+#include "pico/stdlib.h"
+#include "hardware/pio.h"
 
 void pioSetup()
 {
