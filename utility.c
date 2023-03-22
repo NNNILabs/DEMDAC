@@ -1,14 +1,15 @@
-#include "utility.h"
 #include "pico/stdlib.h"
 #include "hardware/pio.h"
+
+#include "utility.h"
+#include "output.pio.h"
 
 void pioSetup()
 {
     PIO pio = pio0;
     uint sm = pio_claim_unused_sm(pio, true);
     uint offset = pio_add_program(pio, &output_program);
-    float div = pioDivider;
-    output_program_init(pio, sm, offset, pin, div);
+    output_program_init(pio, sm, offset, startPin, pioDivider);
     pio_sm_set_enabled(pio, sm, true);
 }
 
