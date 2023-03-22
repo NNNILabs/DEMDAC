@@ -10,7 +10,6 @@ pico_sdk_init()
 
 add_executable(${PROJECT_NAME}
         main.c
-        utility.c
         )
 
 pico_generate_pio_header(${PROJECT_NAME}  
