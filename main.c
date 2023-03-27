@@ -19,7 +19,7 @@ void main()
 
     while (1) 
     {
-        pio_sm_put_blocking(pio, sm, random_bits(5, get_rand_32()));
+        pio_sm_put_blocking(pio, sm, random_bits(8, get_rand_32()));
     }
 }
 
