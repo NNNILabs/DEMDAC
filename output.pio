@@ -1,7 +1,7 @@
 .program output
 
 .wrap_target
-    out pins, 5
+    out pins, 8
 .wrap
 
 % c-sdk {
@@ -19,7 +19,7 @@ static inline void output_program_init(PIO pio, uint sm, uint offset, uint pin, 
     // set the FIFO operating mode
     sm_config_set_out_shift(&c, false, true, 8);
     // Set the pin direction to output at the PIO
-    pio_sm_set_consecutive_pindirs(pio, sm, pin, 5, true);
+    pio_sm_set_consecutive_pindirs(pio, sm, pin, 8, true);
     // Set the PIO clock divider to div
     sm_config_set_clkdiv(&c, div);
     // Load our configuration, and jump to the start of the program
