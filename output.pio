@@ -1,0 +1,28 @@
+.program output
+
+.wrap_target
+    out pins, 8
+.wrap
+
+% c-sdk {
+
+void output_program_init(PIO pio, uint sm, uint offset, uint pin) 
+{
+    pio_sm_config c = output_program_get_default_config(offset);
+    pio_gpio_init(pio, pin);
+    pio_gpio_init(pio, pin + 1);
+    pio_gpio_init(pio, pin + 2);
+    pio_gpio_init(pio, pin + 3);
+    pio_gpio_init(pio, pin + 4);
+    pio_gpio_init(pio, pin + 5);
+    pio_gpio_init(pio, pin + 6);
+    pio_gpio_init(pio, pin + 7);
+    pio_sm_set_consecutive_pindirs(pio, sm, pin, 8, true);
+    sm_config_set_clkdiv(&c, 100);
+    sm_config_set_out_pins(&c, pin, 8);
+    sm_config_set_out_shift(&c, false, true, 8);
+    pio_sm_init(pio, sm, offset, &c);
+    pio_sm_set_enabled(pio, sm, true);
+}
+
+%}
