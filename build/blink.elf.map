@@ -1447,9 +1447,9 @@ Discarded input sections
                 0x00000000       0xac CMakeFiles/blink.dir/C_/Program_Files/Raspberry_Pi/Pico_SDK_v1.5.0/pico-sdk/src/rp2_common/hardware_dma/dma.c.obj
  .bss._timer_claimed
                 0x00000000        0x1 CMakeFiles/blink.dir/C_/Program_Files/Raspberry_Pi/Pico_SDK_v1.5.0/pico-sdk/src/rp2_common/hardware_dma/dma.c.obj
- .text          0x00000000        0x0 C:\Users\vivek\AppData\Local\Temp\ccaESUJx.o
- .data          0x00000000        0x0 C:\Users\vivek\AppData\Local\Temp\ccaESUJx.o
- .bss           0x00000000        0x0 C:\Users\vivek\AppData\Local\Temp\ccaESUJx.o
+ .text          0x00000000        0x0 C:\Users\vivek\AppData\Local\Temp\ccAAAVNP.o
+ .data          0x00000000        0x0 C:\Users\vivek\AppData\Local\Temp\ccAAAVNP.o
+ .bss           0x00000000        0x0 C:\Users\vivek\AppData\Local\Temp\ccAAAVNP.o
  .data          0x00000000        0x0 c:/progra~1/raspbe~1/picosd~1.0/gcc-ar~1/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp\libgcc.a(_dvmd_tls.o)
  .bss           0x00000000        0x0 c:/progra~1/raspbe~1/picosd~1.0/gcc-ar~1/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp\libgcc.a(_dvmd_tls.o)
  .text          0x00000000        0x0 c:/progra~1/raspbe~1/picosd~1.0/gcc-ar~1/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/nofp\libg.a(lib_a-calloc.o)
@@ -1665,7 +1665,7 @@ LOAD c:/progra~1/raspbe~1/picosd~1.0/gcc-ar~1/bin/../lib/gcc/arm-none-eabi/10.3.
 .boot2          0x10000000      0x100
                 0x10000000                __boot2_start__ = .
  *(.boot2)
- .boot2         0x10000000      0x100 C:\Users\vivek\AppData\Local\Temp\ccaESUJx.o
+ .boot2         0x10000000      0x100 C:\Users\vivek\AppData\Local\Temp\ccAAAVNP.o
                 0x10000100                __boot2_end__ = .
                 0x00000001                ASSERT (((__boot2_end__ - __boot2_start__) == 0x100), ERROR: Pico second stage bootloader must be 256 bytes in size)
 
@@ -3255,7 +3255,7 @@ LOAD CMakeFiles/blink.dir/C_/Program_Files/Raspberry_Pi/Pico_SDK_v1.5.0/pico-sdk
 LOAD CMakeFiles/blink.dir/C_/Program_Files/Raspberry_Pi/Pico_SDK_v1.5.0/pico-sdk/src/rp2_common/pico_rand/rand.c.obj
 LOAD CMakeFiles/blink.dir/C_/Program_Files/Raspberry_Pi/Pico_SDK_v1.5.0/pico-sdk/src/rp2_common/hardware_pio/pio.c.obj
 LOAD CMakeFiles/blink.dir/C_/Program_Files/Raspberry_Pi/Pico_SDK_v1.5.0/pico-sdk/src/rp2_common/hardware_dma/dma.c.obj
-LOAD C:\Users\vivek\AppData\Local\Temp\ccaESUJx.o
+LOAD C:\Users\vivek\AppData\Local\Temp\ccAAAVNP.o
 LOAD c:/progra~1/raspbe~1/picosd~1.0/gcc-ar~1/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/nofp\libstdc++.a
 LOAD c:/progra~1/raspbe~1/picosd~1.0/gcc-ar~1/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/nofp\libm.a
 START GROUP
@@ -3378,7 +3378,7 @@ LOAD linker stubs
  .ARM.attributes
                 0x00000826       0x2c CMakeFiles/blink.dir/C_/Program_Files/Raspberry_Pi/Pico_SDK_v1.5.0/pico-sdk/src/rp2_common/hardware_dma/dma.c.obj
  .ARM.attributes
-                0x00000852       0x22 C:\Users\vivek\AppData\Local\Temp\ccaESUJx.o
+                0x00000852       0x22 C:\Users\vivek\AppData\Local\Temp\ccAAAVNP.o
  .ARM.attributes
                 0x00000874       0x1e c:/progra~1/raspbe~1/picosd~1.0/gcc-ar~1/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp\libgcc.a(_dvmd_tls.o)
  .ARM.attributes
