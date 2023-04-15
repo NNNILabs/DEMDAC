@@ -3,11 +3,14 @@
 #include "pico/stdlib.h"
 #include "pico/stdlib.h"
 #include "pico/rand.h"
+#include "pico/multicore.h"
 #include "hardware/dma.h"
 #include "hardware/pio.h"
 #include "hardware/clocks.h"
 
 #include "output.pio.h" 
+
+#define newline printf("\n")
 
 char get_on_bits(unsigned char byte) {
     unsigned char i = 8, on = 0;
@@ -37,25 +40,32 @@ short random_bits(unsigned char no, unsigned long seed) {
     return ret;
 }
 
+void core2()
+{
+    //Life indicator
+    gpio_init(25);
+    gpio_set_dir(25, true);
+
+    while(true)
+    {
+        gpio_put(25, true);
+        sleep_ms(500);
+        gpio_put(25, false);
+        sleep_ms(500);
+    }
+}
+
 int main()
 { 
 	stdio_init_all();  
 
     set_sys_clock_khz(100000, true);
 
-    gpio_init(25);
-    gpio_set_dir(25, true);
-
 	uint OUT_PIN_NUMBER = 0; 
 	uint NPINS = 8; 
 	uint bufdepth = 256;
 
     uint8_t awg_buff[256] __attribute__((aligned(256)));
-    
-	for (int i = 0; i < bufdepth; i = i + 1) 
-    {
-		awg_buff[i] = random_bits(5, get_rand_32()); 
-	}
 			
     PIO pio = pio0;
 	uint sm = pio_claim_unused_sm(pio, true);
@@ -95,11 +105,101 @@ int main()
 
     dma_start_channel_mask(1u << wave_dma_chan_a);
 
+    multicore_launch_core1(core2);
+
+    char input;
+
 	while(true) 
     {
-        gpio_put(25, true);
-        sleep_ms(500);
-        gpio_put(25, false);
-        sleep_ms(500);
+        input = getchar();
+        newline;
+        switch(input)
+        {
+            case '0':
+                printf("Code 0/8");
+                newline;
+                for (int i = 0; i < bufdepth; i = i + 1) 
+                {
+		            awg_buff[i] = random_bits(0, get_rand_32()); 
+	            }
+                break;
+
+            case '1':
+                printf("Code 1/8");
+                newline;
+                for (int i = 0; i < bufdepth; i = i + 1) 
+                {
+		            awg_buff[i] = random_bits(1, get_rand_32()); 
+	            }
+                break;
+
+            case '2':
+                printf("Code 2/8");
+                newline;
+                for (int i = 0; i < bufdepth; i = i + 1) 
+                {
+		            awg_buff[i] = random_bits(2, get_rand_32()); 
+	            }
+                break;
+
+            case '3':
+                printf("Code 3/8");
+                newline;
+                for (int i = 0; i < bufdepth; i = i + 1) 
+                {
+		            awg_buff[i] = random_bits(3, get_rand_32()); 
+	            }
+                break;
+
+            case '4':
+                printf("Code 4/8");
+                newline;
+                for (int i = 0; i < bufdepth; i = i + 1) 
+                {
+		            awg_buff[i] = random_bits(4, get_rand_32()); 
+	            }
+                break;
+
+            case '5':
+                printf("Code 5/8");
+                newline;
+                for (int i = 0; i < bufdepth; i = i + 1) 
+                {
+		            awg_buff[i] = random_bits(5, get_rand_32()); 
+	            }
+                break;
+
+            case '6':
+                printf("Code 6/8");
+                newline;
+                for (int i = 0; i < bufdepth; i = i + 1) 
+                {
+		            awg_buff[i] = random_bits(6, get_rand_32()); 
+	            }
+                break;
+
+            case '7':
+                printf("Code 7/8");
+                newline;
+                for (int i = 0; i < bufdepth; i = i + 1) 
+                {
+		            awg_buff[i] = random_bits(7, get_rand_32()); 
+	            }
+                break;
+
+            case '8':
+                printf("Code 8/8");
+                newline;
+                for (int i = 0; i < bufdepth; i = i + 1) 
+                {
+		            awg_buff[i] = random_bits(8, get_rand_32()); 
+	            }
+                break;
+            
+            default:
+                printf("Unrecognized command!");
+                newline;
+                break;
+        }
     }
 }

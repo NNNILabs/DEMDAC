@@ -41,6 +41,7 @@ pico_add_extra_outputs(${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME} 
     pico_stdlib
     pico_rand
+    pico_multicore
     hardware_pio
     hardware_clocks
     hardware_dma
