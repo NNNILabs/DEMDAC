@@ -10,14 +10,10 @@
 
 #include "output.pio.h"
 
-<<<<<<< HEAD
 #define newline printf("\n")
 
-char get_on_bits(unsigned char byte) {
-=======
 char get_on_bits(unsigned char byte)
 {
->>>>>>> 48facbba53e1e5e8d0f2740c337b746ce052f382
     unsigned char i = 8, on = 0;
     while (i--)
     {
@@ -76,14 +72,6 @@ int main()
 
     set_sys_clock_khz(100000, true);
 
-<<<<<<< HEAD
-	uint OUT_PIN_NUMBER = 0; 
-	uint NPINS = 8; 
-	uint bufdepth = 256;
-
-    uint8_t awg_buff[256] __attribute__((aligned(256)));
-			
-=======
     gpio_init(25);
     gpio_set_dir(25, true);
 
@@ -98,7 +86,6 @@ int main()
         awg_buff[i] = random_bits(5, get_rand_32());
     }
 
->>>>>>> 48facbba53e1e5e8d0f2740c337b746ce052f382
     PIO pio = pio0;
     uint sm = pio_claim_unused_sm(pio, true);
     uint offset = pio_add_program(pio, &output_program);
@@ -135,15 +122,11 @@ int main()
 
     dma_start_channel_mask(1u << wave_dma_chan_a);
 
-<<<<<<< HEAD
     multicore_launch_core1(core2);
 
     char input;
 
 	while(true) 
-=======
-    while (true)
->>>>>>> 48facbba53e1e5e8d0f2740c337b746ce052f382
     {
         input = getchar();
         newline;
