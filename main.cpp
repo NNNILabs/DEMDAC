@@ -1,12 +1,13 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-#include "pico/stdlib.h"
 #include "pico/stdlib.h"
 #include "pico/rand.h"
 #include "pico/multicore.h"
 #include "hardware/dma.h"
 #include "hardware/pio.h"
 #include "hardware/clocks.h"
+#include "tusb.h"
 
 #include "output.pio.h"
 
@@ -46,6 +47,12 @@ uint8_t random_bits(uint8_t num_bits, uint32_t seed) {
     }
 
     return result;
+}
+
+uint8_t random_bits(uint8_t num_bits, uint32_t *state){
+    uint32_t seed = xorshift32(state);
+    random_bits(num_bits, seed);
+    return random_bits(num_bits, seed);
 }
 
 void core2()
@@ -118,102 +125,55 @@ int main()
         false);
 
     dma_start_channel_mask(1u << wave_dma_chan_a);
+    
+    // Wait until USB CDC is ready
+    while(!tud_cdc_connected()){
+        tight_loop_contents();
+    }
 
     multicore_launch_core1(core2);
 
-    char input;
+    int requested_code = -1;
+    int last_code = -1;
+    char input_buff[32] = {0};
+    int new_input = 0;
+
+    // initialize the random number generator
+    uint32_t rng_state = get_rand_32();
+    xorshift32(&rng_state);
+
+    sleep_ms(100);
 
 	while(true) 
     {
-        input = getchar();
-        newline;
-        switch(input)
-        {
-            case '0':
-                printf("Code 0/8");
-                newline;
-                for (int i = 0; i < bufdepth; i = i + 1) 
-                {
-		            awg_buff[i] = 0; 
-	            }
-                break;
-
-            case '1':
-                printf("Code 1/8");
-                newline;
-                for (int i = 0; i < bufdepth; i = i + 1) 
-                {
-		            awg_buff[i] = random_bits(1, get_rand_32()); 
-	            }
-                break;
-
-            case '2':
-                printf("Code 2/8");
-                newline;
-                for (int i = 0; i < bufdepth; i = i + 1) 
-                {
-		            awg_buff[i] = random_bits(2, get_rand_32()); 
-	            }
-                break;
-
-            case '3':
-                printf("Code 3/8");
-                newline;
-                for (int i = 0; i < bufdepth; i = i + 1) 
-                {
-		            awg_buff[i] = random_bits(3, get_rand_32()); 
-	            }
-                break;
-
-            case '4':
-                printf("Code 4/8");
-                newline;
-                for (int i = 0; i < bufdepth; i = i + 1) 
-                {
-		            awg_buff[i] = random_bits(4, get_rand_32()); 
-	            }
-                break;
-
-            case '5':
-                printf("Code 5/8");
-                newline;
-                for (int i = 0; i < bufdepth; i = i + 1) 
-                {
-		            awg_buff[i] = random_bits(5, get_rand_32()); 
-	            }
-                break;
-
-            case '6':
-                printf("Code 6/8");
-                newline;
-                for (int i = 0; i < bufdepth; i = i + 1) 
-                {
-		            awg_buff[i] = random_bits(6, get_rand_32()); 
-	            }
-                break;
-
-            case '7':
-                printf("Code 7/8");
-                newline;
-                for (int i = 0; i < bufdepth; i = i + 1) 
-                {
-		            awg_buff[i] = random_bits(7, get_rand_32()); 
-	            }
-                break;
-
-            case '8':
-                printf("Code 8/8");
-                newline;
-                for (int i = 0; i < bufdepth; i = i + 1) 
-                {
-		            awg_buff[i] = 255; 
-	            }
-                break;
-            
-            default:
-                printf("Unrecognized command!");
-                newline;
-                break;
+        printf("Enter a number between 0 and 7: ");
+        // block until we get a string from the user
+        while(!tud_cdc_available()){
+            sleep_ms(10);
         }
+        // read the string
+        new_input = scanf("%s", &input_buff);
+        // convert the string to an int
+        requested_code = atoi(input_buff);
+        // clear the input buffer
+        memset(input_buff, 0, sizeof(input_buff));
+        // print the number
+        printf("%d\n", requested_code);
+
+        if(requested_code < 0 || requested_code > 8){
+            printf("Number out of range\n");
+            requested_code = 0;
+            last_code = 0;
+            continue;
+        }else if(last_code != requested_code || new_input > 0){
+            last_code = requested_code;
+            printf("Code %d/8\n", requested_code);
+            newline;
+            for (int i = 0; i < bufdepth; i = i + 1) 
+            {
+                awg_buff[i] = random_bits(requested_code, &rng_state); 
+            }
+        }
+
     }
 }
