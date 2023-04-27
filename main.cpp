@@ -12,43 +12,40 @@
 
 #define newline printf("\n")
 
-char get_on_bits(unsigned char byte)
-{
-    unsigned char i = 8, on = 0;
-    while (i--)
-    {
-        if ((byte >> i) & 1)
-        {
-            on++;
-        }
-    }
-    return on;
+uint32_t xorshift32(uint32_t *state) {
+    uint32_t x = *state;
+    x ^= x << 13;
+    x ^= x >> 17;
+    x ^= x << 5;
+    *state = x;
+    return x;
 }
 
-short random_bits(unsigned char no, unsigned long seed)
-{
-    unsigned char ret = 0;
+uint8_t random_bits(uint8_t num_bits, uint32_t seed) {
+    uint8_t result = 0;
+    uint8_t remaining_bits = 8;
 
-    for (char i = 0; i < 32; i++)
-    {
-        if ((seed >> i) & 1)
-        {
-            if (get_on_bits(ret) != no)
-            {
-                ret |= 128;
+    for (uint8_t i = 0; i < num_bits; i++) {
+        uint32_t rand_val = xorshift32(&seed);
+        uint8_t bit_pos = (rand_val % remaining_bits);
+        uint8_t bit = 0;
+        uint8_t pos = 0;
+
+        for (uint8_t j = 0; j <= bit_pos; j++) {
+            while ((result >> pos) & 1) {
+                pos++;
             }
-            else
-            {
-                continue;
+            if (j < bit_pos) {
+                pos++;
             }
-            ret = (ret << 1) | (ret >> 7);
         }
-        else
-        {
-            ret = (ret << 1) | (ret >> 7);
-        }
+
+        bit = 1 << pos;
+        result |= bit;
+        remaining_bits--;
     }
-    return ret;
+
+    return result;
 }
 
 void core2()
@@ -77,9 +74,9 @@ int main()
 
     uint OUT_PIN_NUMBER = 0;
     uint NPINS = 8;
-    uint bufdepth = 256;
+    uint bufdepth = 1024;
 
-    uint8_t awg_buff[256] __attribute__((aligned(256)));
+    uint8_t awg_buff[bufdepth] __attribute__((aligned(256)));
 
     for (int i = 0; i < bufdepth; i = i + 1)
     {
@@ -137,7 +134,7 @@ int main()
                 newline;
                 for (int i = 0; i < bufdepth; i = i + 1) 
                 {
-		            awg_buff[i] = random_bits(0, get_rand_32()); 
+		            awg_buff[i] = 0; 
 	            }
                 break;
 
@@ -209,7 +206,7 @@ int main()
                 newline;
                 for (int i = 0; i < bufdepth; i = i + 1) 
                 {
-		            awg_buff[i] = random_bits(8, get_rand_32()); 
+		            awg_buff[i] = 255; 
 	            }
                 break;
             
