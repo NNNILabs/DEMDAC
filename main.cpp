@@ -81,7 +81,7 @@ int main()
 
     uint OUT_PIN_NUMBER = 0;
     uint NPINS = 8;
-    uint bufdepth = 1024;
+    uint bufdepth = 2048;
 
     uint8_t awg_buff[bufdepth] __attribute__((aligned(256)));
 
@@ -125,13 +125,13 @@ int main()
         false);
 
     dma_start_channel_mask(1u << wave_dma_chan_a);
+
+     multicore_launch_core1(core2);
     
     // Wait until USB CDC is ready
     while(!tud_cdc_connected()){
         tight_loop_contents();
     }
-
-    multicore_launch_core1(core2);
 
     int requested_code = -1;
     int last_code = -1;
