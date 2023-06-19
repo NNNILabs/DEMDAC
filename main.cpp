@@ -13,46 +13,14 @@
 
 #define newline printf("\n")
 
-uint32_t xorshift32(uint32_t *state) {
-    uint32_t x = *state;
-    x ^= x << 13;
-    x ^= x >> 17;
-    x ^= x << 5;
-    *state = x;
-    return x;
-}
-
-uint8_t random_bits(uint8_t num_bits, uint32_t seed) {
-    uint8_t result = 0;
-    uint8_t remaining_bits = 8;
-
-    for (uint8_t i = 0; i < num_bits; i++) {
-        uint32_t rand_val = xorshift32(&seed);
-        uint8_t bit_pos = (rand_val % remaining_bits);
-        uint8_t bit = 0;
-        uint8_t pos = 0;
-
-        for (uint8_t j = 0; j <= bit_pos; j++) {
-            while ((result >> pos) & 1) {
-                pos++;
-            }
-            if (j < bit_pos) {
-                pos++;
-            }
-        }
-
-        bit = 1 << pos;
-        result |= bit;
-        remaining_bits--;
-    }
-
-    return result;
-}
-
-uint8_t random_bits(uint8_t num_bits, uint32_t *state){
-    uint32_t seed = xorshift32(state);
-    random_bits(num_bits, seed);
-    return random_bits(num_bits, seed);
+//Generates random/complement pair and packs them into one number
+uint8_t random(uint8_t code)
+{
+    uint8_t random = get_rand_32() % code;
+    uint8_t complement = code - random;
+    printf("%d, %d", random, complement);
+    newline;
+    return (random << 4) | complement;
 }
 
 void core2()
@@ -84,11 +52,6 @@ int main()
     uint bufdepth = 2048;
 
     uint8_t awg_buff[bufdepth] __attribute__((aligned(256)));
-
-    for (int i = 0; i < bufdepth; i = i + 1)
-    {
-        awg_buff[i] = random_bits(5, get_rand_32());
-    }
 
     PIO pio = pio0;
     uint sm = pio_claim_unused_sm(pio, true);
@@ -126,7 +89,7 @@ int main()
 
     dma_start_channel_mask(1u << wave_dma_chan_a);
 
-     multicore_launch_core1(core2);
+    multicore_launch_core1(core2);
     
     // Wait until USB CDC is ready
     while(!tud_cdc_connected()){
@@ -138,42 +101,40 @@ int main()
     char input_buff[32] = {0};
     int new_input = 0;
 
-    // initialize the random number generator
-    uint32_t rng_state = get_rand_32();
-    xorshift32(&rng_state);
-
-    sleep_ms(100);
-
 	while(true) 
     {
-        printf("Enter a number between 0 and 7: ");
+        //printf("Enter a number between 0 and 16: ");
         // block until we get a string from the user
-        while(!tud_cdc_available()){
-            sleep_ms(10);
-        }
+        //while(!tud_cdc_available()){
+        //    sleep_ms(10);
+        //}
         // read the string
-        new_input = scanf("%s", &input_buff);
+        // new_input = scanf("%s", &input_buff);
         // convert the string to an int
-        requested_code = atoi(input_buff);
+        //requested_code = atoi(input_buff);
         // clear the input buffer
-        memset(input_buff, 0, sizeof(input_buff));
+        //memset(input_buff, 0, sizeof(input_buff));
         // print the number
-        printf("%d\n", requested_code);
+        //printf("%d\n", requested_code);
 
-        if(requested_code < 0 || requested_code > 8){
-            printf("Number out of range\n");
-            requested_code = 0;
-            last_code = 0;
-            continue;
-        }else if(last_code != requested_code || new_input > 0){
-            last_code = requested_code;
-            printf("Code %d/8\n", requested_code);
-            newline;
-            for (int i = 0; i < bufdepth; i = i + 1) 
-            {
-                awg_buff[i] = random_bits(requested_code, &rng_state); 
-            }
-        }
+        //if(requested_code < 0 || requested_code > 16){
+            //printf("Number out of range\n");
+         //   requested_code = 0;
+        //    last_code = 0;
+        //    continue;
+        //}else if(last_code != requested_code || new_input > 0){
+        //    last_code = requested_code;
+        //    //printf("Code %d/16\n", requested_code);
+        sleep_ms(10);
+            requested_code = 8;
+            uint8_t returnValue = random(requested_code);
+            //printf("Return value: %08b", returnValue);
+         //   newline;
+         //   for (int i = 0; i < bufdepth; i = i + 1) 
+         //   {
+                //awg_buff[i] = random_bits(requested_code, &rng_state); 
+         //   }
+        //}
 
     }
 }
